@@ -30,6 +30,11 @@
   using Swift 5.2.  
   [Marcelo Fabri](https://github.com/marcelofabri)
 
+* Fix false positives in `extension_access_modifier` rule when using
+  Swift 5.2.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3150](https://github.com/realm/SwiftLint/issues/3150)
+
 ## 0.39.1: The Laundromat has a Rotating Door
 
 #### Breaking
