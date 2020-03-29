@@ -19,6 +19,11 @@
   [JP Simard](https://github.com/jpsim)
   [#3116](https://github.com/realm/SwiftLint/issues/3116)
 
+* Add `computed_accessors_order` rule to validate the order of `get` and `set`
+  accessors in computed properties and subscripts.  
+  [Marcelo Fabri](https://github.com/marcelofabri)
+  [#3158](https://github.com/realm/SwiftLint/issues/3158)
+
 #### Bug Fixes
 
 * Fix more false positives in `implicit_getter` rule in extensions when using
