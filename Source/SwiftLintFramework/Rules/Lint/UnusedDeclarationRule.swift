@@ -10,7 +10,8 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
 
     public typealias FileInfo = FileUSRs
 
-    public var configuration = UnusedDeclarationConfiguration(severity: .error, includePublicAndOpen: false)
+    public var configuration = UnusedDeclarationConfiguration(severity: .error, includePublicAndOpen: false,
+                                                              customTestClasses: [])
 
     public init() {}
 
@@ -102,7 +103,8 @@ public struct UnusedDeclarationRule: AutomaticTestableRule, ConfigurationProvide
         return FileUSRs(referenced: Set(SwiftLintFile.referencedUSRs(allCursorInfo: allCursorInfo)),
                         declared: SwiftLintFile.declaredUSRs(allCursorInfo: allCursorInfo,
                                                              includePublicAndOpen: configuration.includePublicAndOpen),
-                        testCaseUSRs: SwiftLintFile.testCaseUSRs(allCursorInfo: allCursorInfo))
+                        testCaseUSRs: SwiftLintFile.testCaseUSRs(allCursorInfo: allCursorInfo,
+                                                                 customTestClasses: configuration.customTestClasses))
     }
 
     public func validate(file: SwiftLintFile, collectedInfo: [SwiftLintFile: UnusedDeclarationRule.FileUSRs],
@@ -186,8 +188,10 @@ private extension SwiftLintFile {
         return allCursorInfo.compactMap(referencedUSR)
     }
 
-    static func testCaseUSRs(allCursorInfo: [SourceKittenDictionary]) -> Set<String> {
-        return Set(allCursorInfo.compactMap(testCaseUSR))
+    static func testCaseUSRs(allCursorInfo: [SourceKittenDictionary], customTestClasses: [String]) -> Set<String> {
+        return Set(allCursorInfo.compactMap { cursorInfo in
+            return testCaseUSR(cursorInfo: cursorInfo, customTestClasses: customTestClasses)
+        })
     }
 
     private static func declaredUSRAndOffset(cursorInfo: SourceKittenDictionary, includePublicAndOpen: Bool)
@@ -250,11 +254,12 @@ private extension SwiftLintFile {
         return nil
     }
 
-    private static func testCaseUSR(cursorInfo: SourceKittenDictionary) -> String? {
+    private static func testCaseUSR(cursorInfo: SourceKittenDictionary, customTestClasses: [String]) -> String? {
+        let testSuperClasses = ["XCTestCase"] + customTestClasses
         if let kind = cursorInfo.declarationKind,
             kind == .class,
             let annotatedDecl = cursorInfo.annotatedDeclaration,
-            annotatedDecl.contains("<Type usr=\"c:objc(cs)XCTestCase\">XCTestCase</Type>"),
+            testSuperClasses.contains(where: { annotatedDecl.contains(">\($0)</Type>") }),
             let usr = cursorInfo.usr {
             return usr
         }

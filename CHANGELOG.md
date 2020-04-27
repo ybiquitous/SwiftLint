@@ -15,6 +15,10 @@
   found issues.  
   [krin-san](https://github.com/krin-san)
   [#3177](https://github.com/realm/SwiftLint/pull/3177)
+* Added `custom_test_classes` to the `unused_declaration` rule so it
+  knows test methods inside classes subclassing your custom test classes
+  should be treated as used.  
+  [Keith Smiley](https://github.com/keith)
 
 #### Bug Fixes
 
