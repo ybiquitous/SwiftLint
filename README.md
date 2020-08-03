@@ -1,5 +1,6 @@
 # SwiftLint
 
+infomation
 A tool to enforce Swift style and conventions, loosely based on
 [GitHub's Swift Style Guide](https://github.com/github/swift-style-guide).
 
